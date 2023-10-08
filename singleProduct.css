@@ -1,0 +1,60 @@
+.single-display-pane{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 20px;
+}
+.singlePro1{
+    display: flex;
+    flex-direction: column;
+    width: 40vw;
+    justify-content: center;
+    align-items: center;
+    background-color: whitesmoke;
+}
+.singlePro1 img{
+    width: 20vw;
+}
+.singlePro2{
+    width: 25vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 20px;
+}
+p#title-pro{
+    font-size: 23px;
+    font-weight: bolder;
+}
+p#price-pro{
+    font-size: 20px;
+    font-weight: bold;
+}
+p#rating-pro{
+    color: blue;
+}
+p#cat-pro{
+    margin-top: 0px;
+}
+a{
+    background-color: rgb(152, 151, 151);
+    padding: 10px;
+    text-decoration: none;
+    color:white;
+    margin-top: 10px;
+}
+a:hover{
+    cursor: pointer;
+    background-color: rgb(198, 198, 198);
+}
+button{
+    background-color: rgb(152, 151, 151);
+    padding: 10px;
+    text-decoration: none;
+    color:white;
+    margin-top: 10px;
+}
+button:hover{
+    cursor: pointer;
+    background-color: rgb(198, 198, 198);
+}
