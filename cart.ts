@@ -9,14 +9,31 @@ fetch("https://fakestoreapi.com/products")
   })
   .then((data: any[]) => {
     let x: string | null = window.sessionStorage.getItem("cartData");
-    let k:[] = JSON.parse(x || "[]");
+    let k: any[] = JSON.parse(x || "[]");
     let cartIds: number[] = [];
     k.forEach((item: any) => {
       cartIds.push(item._id);
     });
     let jsonData = data;
     jsonData.forEach((item) => {
+      const str:string|null = sessionStorage.getItem('cartQuantity');
+      const parsedObject: any[] = JSON.parse(str || "[]");
+      let presentQuant:number=1;
+      let checker:boolean=false;
+      for(var i = 0; i < parsedObject.length; i++) {
+        if (parsedObject[i]._id ===item.id) {
+            presentQuant=parsedObject[i].quant;
+            checker=true;
+            break;
+        }}
+      if(checker===false){
+        let tempQuant={_id:item.id,quant:1};
+        presentQuant=1;
+        parsedObject.push(tempQuant);
+      }
+      sessionStorage.setItem('cartQuantity',JSON.stringify(parsedObject));
       if (cartIds.includes(item.id)) {
+
         const cardDiv: HTMLDivElement = document.createElement("div");
         cardDiv.classList.add("cart-card");
 
@@ -32,11 +49,24 @@ fetch("https://fakestoreapi.com/products")
         price.classList.add("price");
         price.textContent = `Price: $${item.price}`;
 
+        const AddQuant: HTMLButtonElement = document.createElement("button");
+        AddQuant.textContent = "+";
+        AddQuant.onclick = () => addQuantity(item.id, item.price);
+
+        const paraQuant: HTMLParagraphElement = document.createElement("p");
+        paraQuant.id = `para-quant${item.id}`;
+        paraQuant.textContent = `${presentQuant}`;
+
+        const subQuant: HTMLButtonElement = document.createElement("button");
+        subQuant.id = `sub-but${item.id}`;
+        subQuant.innerText = "-";
+        subQuant.onclick = () => subQuantity(item.id, item.price);
+
         const deleteFromCartButton: HTMLButtonElement = document.createElement("button");
         deleteFromCartButton.textContent = "Delete From Cart";
         deleteFromCartButton.onclick = () => deleteFromCart(item.id);
 
-        sum = sum + Number(item.price);
+        sum = sum + Number(item.price)*presentQuant;
         window.sessionStorage.setItem("totalPayment", sum.toString());
         const checkOutPayment: HTMLElement | null = document.getElementById('checkOutPayment');
         if (checkOutPayment) checkOutPayment.innerText = `Proceed to pay: $${sum}`;
@@ -44,6 +74,9 @@ fetch("https://fakestoreapi.com/products")
         cardDiv.appendChild(img);
         cardDiv.appendChild(title);
         cardDiv.appendChild(price);
+        cardDiv.appendChild(subQuant);
+        cardDiv.appendChild(paraQuant);
+        cardDiv.appendChild(AddQuant);
         cardDiv.appendChild(deleteFromCartButton);
 
         document.getElementById("cartCard")?.appendChild(cardDiv);
@@ -54,6 +87,45 @@ fetch("https://fakestoreapi.com/products")
     console.error("Error:", error);
   });
 
+ function addQuantity(itemId,itemPrice){
+  const str:string|null = sessionStorage.getItem('cartQuantity');
+  const parsedObject: any[] = JSON.parse(str || "[]");
+    let checker:boolean=false;
+    for(var i = 0; i < parsedObject.length; i++) {
+      if (parsedObject[i]._id ===itemId) {
+          parsedObject[i].quant++;
+          sum=sum+itemPrice;
+          document.getElementById(`para-quant${itemId}`).innerText=`${parsedObject[i].quant}`;
+          checker=true;
+          break;
+      }}
+    window.sessionStorage.setItem("totalPayment",sum.toString());
+    document.getElementById('checkOutPayment').innerText=`Proceed to pay: $${sum}`;
+    sessionStorage.setItem('cartQuantity',JSON.stringify(parsedObject));
+}
+ function subQuantity(itemId,itemPrice){
+  const str:string|null = sessionStorage.getItem('cartQuantity');
+  const parsedObject: any[] = JSON.parse(str || "[]");
+    let checker:boolean=false;
+    for(var i = 0; i < parsedObject.length; i++) {
+      if (parsedObject[i]._id ===itemId) {
+          if(parsedObject[i].quant>0)
+          {
+            parsedObject[i].quant--;
+            sum=sum-itemPrice;
+            document.getElementById(`para-quant${itemId}`).innerText=`${parsedObject[i].quant}`;
+          }
+          checker=true;
+          break;
+      }}
+    if(!checker){
+      let tempQuant={_id:itemId,quant:1};
+      parsedObject.push(tempQuant);
+    }
+    window.sessionStorage.setItem("totalPayment",sum.toString());
+    document.getElementById('checkOutPayment').innerText=`Proceed to pay: $${sum}`;
+    sessionStorage.setItem('cartQuantity',JSON.stringify(parsedObject));
+  }
 function deleteFromCart(itemId: number) {
   let tempData: any[] | null = JSON.parse(window.sessionStorage.getItem("cartData") || "[]");
   let updatedData: any[] = tempData.filter(function (item_f) {

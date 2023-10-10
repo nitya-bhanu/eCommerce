@@ -38,7 +38,9 @@ function addToCart(id_details: number) {
 
   // Convert existing cart data to an array or create an empty array
   const cartArray = existingCartData ? JSON.parse(existingCartData) : [];
-
+  //changing add to cart option to added
+  let y:HTMLElement = document.getElementById("cartAdd");
+  if(y) y.innerText=('Added');
   // Add the new product ID to the cart array
   cartArray.push({ _id: id_details });
 

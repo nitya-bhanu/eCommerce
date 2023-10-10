@@ -43,6 +43,10 @@ function addToCart(id_details) {
     var existingCartData = window.sessionStorage.getItem("cartData");
     // Convert existing cart data to an array or create an empty array
     var cartArray = existingCartData ? JSON.parse(existingCartData) : [];
+    //changing add to cart option to added
+    var y = document.getElementById("cartAdd");
+    if (y)
+        y.innerText = ('Added');
     // Add the new product ID to the cart array
     cartArray.push({ _id: id_details });
     // Update the cart data in sessionStorage
